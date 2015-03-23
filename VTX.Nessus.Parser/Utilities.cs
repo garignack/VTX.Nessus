@@ -3,11 +3,11 @@ using System.IO;
 using System.Collections.Generic;
 using System.Text;
 
-namespace VTX.Nessus
+namespace VTX.Utilities
 {
-    public class Parser
+    public class File
     {
-        private static List<int> FindBytePatternOffset(byte[] pattern, string FILE_NAME, int bufferSize = 65536)
+        public static List<int> FindBytePatternOffset(byte[] pattern, string FILE_NAME, int bufferSize = 65536)
         {
             //Implements Boyd-Moyer-HorsePool Algorithm
             //Adapted from http://aspdotnetcodebook.blogspot.com/2013/04/boyer-moore-search-algorithm.html
@@ -65,7 +65,7 @@ namespace VTX.Nessus
             return matches;
         }
 
-        private static int[] BuildBadCharTable(byte[] needle)
+        public static int[] BuildBadCharTable(byte[] needle)
         {
             int[] badShift = new int[256];
             for (int i = 0; i < 256; i++)
@@ -80,7 +80,7 @@ namespace VTX.Nessus
             return badShift;
         }
 
-        private static byte[] GetFileBytes(string FileName, int StartLocation, int EndLocation)
+        public static byte[] GetFileBytes(string FileName, int StartLocation, int EndLocation)
         {
             // Gets the bytes of a file between the StartLocation to EndLocation
             byte[] buffer;
