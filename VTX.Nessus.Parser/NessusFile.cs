@@ -13,6 +13,7 @@ namespace VTX.Nessus
         private int hostCount;
         private FileUtilities fileUtility;
         private ConcurrentDictionary<string, int> hostList;
+        private string filePath;
 
         public NessusClientDataV2() 
         {
@@ -20,11 +21,12 @@ namespace VTX.Nessus
 
         }
 
-        public NessusClientDataV2(string FILE_NAME)
+        public NessusClientDataV2(string filePath)
         {
             fileUtility = new FileUtilities();
-            if (File.Exists(filePath) == false) { throw new FileNotFoundException("File Not Found", FILE_NAME); }
-            if (fileUtility.FindBytePatternFirstLocation(){ }
+            if (File.Exists(filePath) == false) { throw new FileNotFoundException("File Not Found", filePath); }
+            if (fileUtility.FindStringFirstLocation("<NessusClientData_v2>", filePath) == 0) { throw new FormatException("Not a valid Nessus_V2 file"); }
+
         }
     }
 }

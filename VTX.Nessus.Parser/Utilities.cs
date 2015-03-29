@@ -7,25 +7,25 @@ namespace VTX.Utilities
 {
     public class FileUtilities
     {
-        public static int FindBytePatternFirstLocation(byte[] pattern, string FILE_NAME, int bufferSize = 65536)
-        {
-            return FindBytePatternNextLocation(pattern, FILE_NAME, 0);
-        }
 
-        public static int FindBytePatternNextLocation(byte[] pattern, string FILE_NAME, int startLocation, int bufferSize = 65536)
+        /// <summary>
+        /// Implements Boyd-Moyer-HorsePool Algorithm. Adapted from http://aspdotnetcodebook.blogspot.com/2013/04/boyer-moore-search-algorithm.html
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static int FindBytePatternNextLocation(byte[] pattern, string filePath, int startLocation, int bufferSize = 65536)
         {
-            //Implements Boyd-Moyer-HorsePool Algorithm
-            //Adapted from http://aspdotnetcodebook.blogspot.com/2013/04/boyer-moore-search-algorithm.html
 
             byte[] needle = pattern;
             if (needle.Length > bufferSize) { bufferSize = needle.Length * 2; }
             byte[] haystack = new byte[bufferSize];
 
             Int32 match = new Int32();
-            using (FileStream r = new FileStream(FILE_NAME, FileMode.Open, FileAccess.Read))
+            using (FileStream r = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
 
                 int numBytesToRead = (int)r.Length;
+                if (startLocation > numBytesToRead) { startLocation = 0; }
                 if (needle.Length > numBytesToRead)
                 {
                     return match;
@@ -57,7 +57,7 @@ namespace VTX.Utilities
                         {
                             if (scan == 0)
                             { //Match found
-                                int i = pos + offset;
+                                match = pos + offset;
                                 return match;
                             }
                         }
@@ -69,18 +69,21 @@ namespace VTX.Utilities
             }
             return match;
         }
-
-        public static List<int> FindBytePatternLocations(byte[] pattern, string FILE_NAME, int bufferSize = 65536)
+        /// <summary>
+        /// Implements Boyd-Moyer-HorsePool Algorithm. Adapted from http://aspdotnetcodebook.blogspot.com/2013/04/boyer-moore-search-algorithm.html
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static List<int> FindBytePatternLocations(byte[] pattern, string filePath, int bufferSize = 65536)
         {
-            //Implements Boyd-Moyer-HorsePool Algorithm
-            //Adapted from http://aspdotnetcodebook.blogspot.com/2013/04/boyer-moore-search-algorithm.html
+
 
             byte[] needle = pattern;
             if (needle.Length > bufferSize) { bufferSize = needle.Length * 2; }
             byte[] haystack = new byte[bufferSize];
 
             List<int> matches = new List<int>();
-            using (FileStream r = new FileStream(FILE_NAME, FileMode.Open, FileAccess.Read))
+            using (FileStream r = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
                 int numBytesToRead = (int)r.Length;
                 if (needle.Length > numBytesToRead)
@@ -128,10 +131,57 @@ namespace VTX.Utilities
             return matches;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static int FindBytePatternFirstLocation(byte[] pattern, string filePath, int bufferSize = 65536)
+        {
+            return FindBytePatternNextLocation(pattern, filePath, 0, bufferSize);
+        }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public int FindStringFirstLocation (string searchString, string filePath, int bufferSize = 65536)
+        {
 
+            byte[] pattern = GetEncoding(filePath).GetBytes(searchString);
+            return FindBytePatternNextLocation(pattern, filePath, 0, bufferSize);
+        }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public int FindStringNextLocation(string searchString, string filePath, int startLocation, int bufferSize = 65536)
+        {
 
+            byte[] pattern = GetEncoding(filePath).GetBytes(searchString);
+            return FindBytePatternNextLocation(pattern, filePath, startLocation, bufferSize);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public List<int> FindStringLocations(string searchString, string filePath, int bufferSize = 65536)
+        {
+
+            byte[] pattern = GetEncoding(filePath).GetBytes(searchString);
+            return FindBytePatternLocations(pattern, filePath, bufferSize);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns> 
         private static int[] BuildBadCharTable(byte[] needle)
         {
             int[] badShift = new int[256];
@@ -147,11 +197,16 @@ namespace VTX.Utilities
             return badShift;
         }
 
-        public static byte[] GetFileBytes(string FileName, int StartLocation, int EndLocation)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static byte[] GetFileBytes(string filePath, int StartLocation, int EndLocation)
         {
             // Gets the bytes of a file between the StartLocation to EndLocation
             byte[] buffer;
-            using (FileStream r = new FileStream(FileName, FileMode.Open, FileAccess.Read))
+            using (FileStream r = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
                 int maxSize = (int)r.Length;
                 if (EndLocation == -1 || EndLocation > maxSize) { EndLocation = maxSize; }
@@ -165,14 +220,39 @@ namespace VTX.Utilities
             return buffer;
 
         }
-        public static byte[] GetBytes(string str)
+
+        /// <summary>
+        /// Determines a text file's encoding by analyzing its byte order mark (BOM).
+        /// Defaults to ASCII when detection of the text file's endianness fails.
+        /// </summary>
+        /// <param name="filePath">The text file to analyze.</param>
+        /// <returns>The detected encoding.</returns>
+        public static Encoding GetEncoding(string filePath)
+        {
+            // Read the BOM
+            var bom = new byte[4];
+            using (var file = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+                file.Read(bom, 0, 4);
+            }
+
+            // Analyze the BOM
+            if (bom[0] == 0x2b && bom[1] == 0x2f && bom[2] == 0x76) return Encoding.UTF7;
+            if (bom[0] == 0xef && bom[1] == 0xbb && bom[2] == 0xbf) return Encoding.UTF8;
+            if (bom[0] == 0xff && bom[1] == 0xfe) return Encoding.Unicode; //UTF-16LE
+            if (bom[0] == 0xfe && bom[1] == 0xff) return Encoding.BigEndianUnicode; //UTF-16BE
+            if (bom[0] == 0 && bom[1] == 0 && bom[2] == 0xfe && bom[3] == 0xff) return Encoding.UTF32;
+            return Encoding.Default;
+        }
+
+        private static byte[] GetBytes(string str)
         {
             byte[] bytes = new byte[str.Length * sizeof(char)];
             System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
             return bytes;
         }
 
-        public static string GetString(byte[] bytes)
+        private static string GetString(byte[] bytes)
         {
             char[] chars = new char[bytes.Length / sizeof(char)];
             System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
