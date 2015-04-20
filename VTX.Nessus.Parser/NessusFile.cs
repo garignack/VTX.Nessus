@@ -8,7 +8,7 @@ using VTX.Utilities;
 
 namespace VTX.Nessus
 {
-    class NessusClientDataV2
+    public class NessusClientDataV2
     {
         //+++++++ Constants
 
@@ -29,6 +29,7 @@ namespace VTX.Nessus
         public NessusClientDataV2(string filePath)
         {
             _filePath = filePath;
+            this.Initialize();
 
         }
 

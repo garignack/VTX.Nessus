@@ -7,12 +7,14 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using VTX.Nessus;
 
 namespace NessusParserUI
 {
     public partial class TestForm : Form
     {
         private string _filePath;
+        public NessusClientDataV2 _NessusFile;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public TestForm()
@@ -60,6 +62,14 @@ namespace NessusParserUI
         private void button1_Click(object sender, EventArgs e)
         {
             MessageBox.Show(this._filePath);
+        }
+
+        private void VTXTestButton_Click(object sender, EventArgs e)
+        {
+            if (this._filePath != null)
+            {
+                _NessusFile = new NessusClientDataV2(this._filePath);
+            }
         }
 
     }

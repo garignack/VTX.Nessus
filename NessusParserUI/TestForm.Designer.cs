@@ -34,6 +34,7 @@
             this.VTXTestButton = new System.Windows.Forms.Button();
             this.LinqTestButton = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.testFormBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.testFormBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -43,7 +44,6 @@
             this.FilePathTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.testFormBindingSource, "FilePath", true));
             this.FilePathTextBox.Location = new System.Drawing.Point(15, 16);
             this.FilePathTextBox.Name = "FilePathTextBox";
-            this.FilePathTextBox.ReadOnly = true;
             this.FilePathTextBox.Size = new System.Drawing.Size(234, 20);
             this.FilePathTextBox.TabIndex = 0;
             this.FilePathTextBox.TabStop = false;
@@ -66,6 +66,7 @@
             this.VTXTestButton.TabIndex = 2;
             this.VTXTestButton.Text = "vtx.FileUtilities";
             this.VTXTestButton.UseVisualStyleBackColor = true;
+            this.VTXTestButton.Click += new System.EventHandler(this.VTXTestButton_Click);
             // 
             // LinqTestButton
             // 
@@ -86,6 +87,16 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.testFormBindingSource, "FilePath", true));
+            this.label1.Location = new System.Drawing.Point(12, 97);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "label1";
+            // 
             // testFormBindingSource
             // 
             this.testFormBindingSource.DataSource = typeof(NessusParserUI.TestForm);
@@ -95,6 +106,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.LinqTestButton);
             this.Controls.Add(this.VTXTestButton);
@@ -118,6 +130,7 @@
         private System.Windows.Forms.Button LinqTestButton;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.BindingSource testFormBindingSource;
+        private System.Windows.Forms.Label label1;
     }
 }
 
