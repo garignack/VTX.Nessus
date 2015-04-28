@@ -1,0 +1,10 @@
+<wafl xmlns="http://www.ibm.com/WAFLSchema">
+  <global-bean-decls>
+  </global-bean-decls>
+  <synthetic-methods>
+  </synthetic-methods>
+  <entrypoints>
+  </entrypoints>
+  <call-replacements>
+  </call-replacements>
+</wafl>

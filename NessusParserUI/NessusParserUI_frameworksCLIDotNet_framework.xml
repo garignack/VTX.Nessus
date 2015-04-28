@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FrameworkInput type="DotNet" xmlns="http://www.ibm.com/FrameworkInput">
+	<WaflFile>Z:\Documents\Visual Studio 2013\Projects\VTX.Nessus\NessusParserUI\NessusParserUI_frameworksCLIDotNet.wafl</WaflFile>
+	<LogConfig>Z:\Documents\Visual Studio 2013\Projects\VTX.Nessus\NessusParserUI\NessusParserUI_frameworksCLIDotNet_waflLogConfig.xml</LogConfig>
+	<HandlerJarDir>C:\Program Files (x86)\IBM\AppScanSource\waflgens</HandlerJarDir>
+	<ProjectFile>Z:\Documents\Visual Studio 2013\Projects\VTX.Nessus\NessusParserUI\NessusParserUI.csproj</ProjectFile>
+	<DotNetInfo>
+		<WalaScopeFile>C:\ProgramData\IBM\AppScanSource\temp\NessusParserUI.scope</WalaScopeFile>
+		<Options>
+			<Property name="aspnet.precompile.dir" value="Z:\Documents\Visual Studio 2013\Projects\VTX.Nessus\NessusParserUI"></Property>
+			<Property name="application.file" value="Z:\Documents\Visual Studio 2013\Projects\VTX.Nessus\VTX.Nessus.sln"></Property>
+			<Property name="project.configuration" value="Debug"></Property>
+		</Options>
+	</DotNetInfo>
+</FrameworkInput>
