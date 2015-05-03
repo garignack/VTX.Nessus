@@ -81,7 +81,7 @@ namespace NessusParserUI
                     _NessusFile = new NessusClientDataV2(this._filePath);
                     _NessusFile.Cache = true;
 
-                    foreach (VTX.Nessus.ReportHost ReportHost in _NessusFile.ReportHosts)
+                    foreach (VTX.Nessus.NessusXML ReportHost in _NessusFile.ReportHosts)
                     {
                         XElement XML = ReportHost.XML;
                     }

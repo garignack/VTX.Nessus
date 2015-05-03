@@ -37,7 +37,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ReportHost.cs" />
+    <Compile Include="NessusXML.cs" />
     <Compile Include="NessusClientDataV2.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

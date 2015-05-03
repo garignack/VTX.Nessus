@@ -13,7 +13,7 @@ using VTX.Utilities;
 
 namespace VTX.Nessus
 {
-    public class ReportHost
+    public class NessusXML
     {
         private bool _cache = false;
         private XElement _xml;
@@ -26,14 +26,14 @@ namespace VTX.Nessus
         private XElement parse()
         {
             FileUtilities fileUtility = new FileUtilities();
-            string reportHostXMLString = fileUtility.GetFileString(FilePath, StartFileLocation, EndFileLocation);
-            return XElement.Parse(reportHostXMLString);
+            string XMLString = fileUtility.GetFileString(FilePath, FileStartLocation, FileEndLocation);
+            return XElement.Parse(XMLString);
         }
 
         public string Name { get; set; }
         public string FilePath { get; set; }
-        public int StartFileLocation { get; set; }
-        public int EndFileLocation { get; set; }
+        public int FileStartLocation { get; set; }
+        public int FileEndLocation { get; set; }
 
         public XElement XML
         {

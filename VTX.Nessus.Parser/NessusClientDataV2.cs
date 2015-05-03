@@ -24,7 +24,7 @@ namespace VTX.Nessus
         private long _fileSize;
         private int _hostCount;
         private FileUtilities fileUtility;
-        private ConcurrentDictionary<string, ReportHost> _hostDictionary;
+        private ConcurrentDictionary<string, NessusXML> _hostDictionary;
         private string _filePath;
         private string _reportname;
 
@@ -44,7 +44,7 @@ namespace VTX.Nessus
         //+++++++ Destructors
 
         //+++++++ Public Methods
-        public IEnumerator<System.Collections.Generic.KeyValuePair<string, VTX.Nessus.ReportHost>> GetEnumerator()
+        public IEnumerator<System.Collections.Generic.KeyValuePair<string, VTX.Nessus.NessusXML>> GetEnumerator()
         {
             return _hostDictionary.GetEnumerator();
         }
@@ -73,7 +73,7 @@ namespace VTX.Nessus
             //Setup Concurrent Dictionary
 //            int numProcs = Environment.ProcessorCount;
 //            int concurrencyLevel = numProcs * 2;
-            _hostDictionary = new ConcurrentDictionary<string, ReportHost>();
+            _hostDictionary = new ConcurrentDictionary<string, NessusXML>();
 
             for (int i = 0; i < _hostCount; i++)
                 {
@@ -89,12 +89,12 @@ namespace VTX.Nessus
                 string reportHostNode = fileUtility.GetFileString(_filePath, reportHostStartLocation, reportHostStartLocation + 264);
 
 
-                ReportHost reportHost = new ReportHost();
+                NessusXML reportHost = new NessusXML();
                 string reportHostName = reportHostNode.Substring(reportHostNode.IndexOf("name=\"") + 6, reportHostNode.IndexOf("\">") - reportHostNode.IndexOf("name=\"") - 6);
                 reportHost.Name = reportHostName;
                 reportHost.FilePath = _filePath;
-                reportHost.StartFileLocation = reportHostStartLocation;
-                reportHost.EndFileLocation = reportHostEndLocation;
+                reportHost.FileStartLocation = reportHostStartLocation;
+                reportHost.FileEndLocation = reportHostEndLocation;
                 if (!( _hostDictionary.TryAdd(reportHost.Name, reportHost)))
                 {
                     int j = 1;
@@ -132,7 +132,7 @@ namespace VTX.Nessus
             {
                 if (value)
                 {
-                    foreach (ReportHost reportHost in _hostDictionary.Values)
+                    foreach (NessusXML reportHost in _hostDictionary.Values)
                     {
                         reportHost.Cache = true;
                     }
@@ -140,7 +140,7 @@ namespace VTX.Nessus
                 }
                 else
                 {
-                    foreach (ReportHost reportHost in _hostDictionary.Values)
+                    foreach (NessusXML reportHost in _hostDictionary.Values)
                     {
                         reportHost.Cache = false;
                     }
@@ -163,7 +163,7 @@ namespace VTX.Nessus
             get { return _reportname; }
             set { }
         }
-        public System.Collections.Generic.ICollection<VTX.Nessus.ReportHost> ReportHosts
+        public System.Collections.Generic.ICollection<VTX.Nessus.NessusXML> ReportHosts
         {
             get { return _hostDictionary.Values; }
             set { }
