@@ -20,6 +20,7 @@ namespace VTX.Nessus
 
         //+++++++ Fields
         private bool _initialized;
+        private bool _cache;
         private long _fileSize;
         private int _hostCount;
         private FileUtilities fileUtility;
@@ -40,6 +41,15 @@ namespace VTX.Nessus
             Initialize();
 
         }
+        //+++++++ Destructors
+
+        //+++++++ Public Methods
+        public IEnumerator<System.Collections.Generic.KeyValuePair<string, VTX.Nessus.ReportHost>> GetEnumerator()
+        {
+            return _hostDictionary.GetEnumerator();
+        }
+
+        //+++++++ Private Methods
 
         private void Initialize()
         {
@@ -71,9 +81,9 @@ namespace VTX.Nessus
                 int reportHostEndLocation = hostListLocations[i] + 1;
                 if (i == _hostCount - 1)
                 {
-                    reportHostEndLocation = fileUtility.FindStringNextLocation("</Report>", _filePath, reportHostStartLocation) - 1;
+                    reportHostEndLocation = fileUtility.FindStringNextLocation("</Report>", _filePath, reportHostStartLocation);
                 }
-                else { reportHostEndLocation = hostListLocations[i + 1] - 1; }
+                else { reportHostEndLocation = hostListLocations[i + 1]; }
 
 
                 string reportHostNode = fileUtility.GetFileString(_filePath, reportHostStartLocation, reportHostStartLocation + 264);
@@ -82,6 +92,7 @@ namespace VTX.Nessus
                 ReportHost reportHost = new ReportHost();
                 string reportHostName = reportHostNode.Substring(reportHostNode.IndexOf("name=\"") + 6, reportHostNode.IndexOf("\">") - reportHostNode.IndexOf("name=\"") - 6);
                 reportHost.Name = reportHostName;
+                reportHost.FilePath = _filePath;
                 reportHost.StartFileLocation = reportHostStartLocation;
                 reportHost.EndFileLocation = reportHostEndLocation;
                 if (!( _hostDictionary.TryAdd(reportHost.Name, reportHost)))
@@ -106,15 +117,38 @@ namespace VTX.Nessus
         {
             throw new FormatException(String.Format("There was an error parsing {0}: {1}", _filePath, message));
         }
-        //+++++++ Destructors
-
-
+        
         //+++++++ Properties
 
         public bool Initialized
         {
             get { return _initialized; }
         }
+
+        public bool Cache
+        {
+            get { return _cache; }
+            set
+            {
+                if (value)
+                {
+                    foreach (ReportHost reportHost in _hostDictionary.Values)
+                    {
+                        reportHost.Cache = true;
+                    }
+                    _cache = true;
+                }
+                else
+                {
+                    foreach (ReportHost reportHost in _hostDictionary.Values)
+                    {
+                        reportHost.Cache = false;
+                    }
+                    _cache = false;
+                }
+            }
+        }
+
         public string FilePath
         {
             get { return _filePath; }
@@ -129,14 +163,76 @@ namespace VTX.Nessus
             get { return _reportname; }
             set { }
         }
+        public System.Collections.Generic.ICollection<VTX.Nessus.ReportHost> ReportHosts
+        {
+            get { return _hostDictionary.Values; }
+            set { }
+        }
+
+        public System.Collections.Generic.ICollection<string> ReportHostList
+        {
+            get { return _hostDictionary.Keys; }
+            set { }
+        }
     }
     public class ReportHost
     {
-        public string Name;
-        public long StartFileLocation;
-        public long EndFileLocation;
-        public XElement XML;
+        private bool _cache = false;
+        private XElement _xml;
 
+        public void Load()
+        {
+            _xml = this.parse();
+        }
+
+        private XElement parse()
+        {
+            FileUtilities fileUtility = new FileUtilities();
+            string reportHostXMLString = fileUtility.GetFileString(FilePath, StartFileLocation, EndFileLocation);
+            return XElement.Parse(reportHostXMLString);
+        }
+    
+        public string Name { get; set; }
+        public string FilePath { get; set; }
+        public int StartFileLocation { get; set; }
+        public int EndFileLocation { get; set; }
+
+        public XElement XML
+        {
+            get {
+                if (_xml == null)
+                {
+                    if (Cache)
+                    {
+                        _xml = this.parse();
+                        return _xml;
+                    }
+                    else
+                    {
+                        return this.parse();
+                    }
+                }
+                return _xml;
+            }
+            set {
+
+            }
+        }
+        public bool Cache
+        {
+            get { return _cache; }
+            set {
+                if(value)
+                {
+                    _cache = true;
+                }
+                else
+                {
+                    _cache = false;
+                    _xml = null;
+                }
+            }
+        }
     };
 
 }

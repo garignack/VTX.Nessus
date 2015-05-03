@@ -79,8 +79,16 @@ namespace NessusParserUI
                     Stopwatch sw = new Stopwatch();
                     sw.Start();
                     _NessusFile = new NessusClientDataV2(this._filePath);
+                    _NessusFile.Cache = true;
+
+                    foreach (VTX.Nessus.ReportHost ReportHost in _NessusFile.ReportHosts)
+                    {
+                        XElement XML = ReportHost.XML;
+                    }
                     sw.Stop();
                     TimeSpan ts = sw.Elapsed;
+
+                    _NessusFile.Cache = false;
 
                     label1.Text = _NessusFile.ReportName + " |  " + ts.ToString();
 
@@ -100,7 +108,7 @@ namespace NessusParserUI
             if (File.Exists(_filePath) == false) { throw new FileNotFoundException("File Not Found", _filePath); }
 
             XElement NessusClientData_v2 = XElement.Load(_filePath);
-            XNamespace aw = "http://www.nessus.org/cm";
+            XNamespace cm = "http://www.nessus.org/cm";
             string reportName =
                 (from el in NessusClientData_v2.Descendants("Report")
                  select el).First().Attribute("name").Value;
