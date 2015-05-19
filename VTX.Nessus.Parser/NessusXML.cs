@@ -17,10 +17,15 @@ namespace VTX.Nessus
     {
         private bool _cache = false;
         private XElement _xml;
+        private static object lockParse = new object();
 
         public void Load()
         {
-            _xml = this.parse();
+            lock (lockParse)
+            {
+                _xml = this.parse();
+            }
+            
         }
 
         private XElement parse()
@@ -39,19 +44,22 @@ namespace VTX.Nessus
         {
             get
             {
-                if (_xml == null)
+                lock (lockParse)
                 {
-                    if (Cache)
+                    if (_xml == null)
                     {
-                        _xml = this.parse();
-                        return _xml;
+                        if (Cache)
+                        {
+                            _xml = this.parse();
+                            return _xml;
+                        }
+                        else
+                        {
+                            return this.parse();
+                        }
                     }
-                    else
-                    {
-                        return this.parse();
-                    }
+                    return _xml;
                 }
-                return _xml;
             }
             set
             {

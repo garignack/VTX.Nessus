@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VTX.Nessus", "VTX.Nessus.Pa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NessusParserUI", "NessusParserUI\NessusParserUI.csproj", "{DBBD321E-AF20-418A-AF83-87A4A09AA16F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VTX.Nessus.Parsers", "VTX.Nessus.Parsers.SQLCE\VTX.Nessus.Parsers.csproj", "{253A4B03-5BC2-44E0-90CE-452598719A18}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{DBBD321E-AF20-418A-AF83-87A4A09AA16F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBBD321E-AF20-418A-AF83-87A4A09AA16F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBBD321E-AF20-418A-AF83-87A4A09AA16F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{253A4B03-5BC2-44E0-90CE-452598719A18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{253A4B03-5BC2-44E0-90CE-452598719A18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{253A4B03-5BC2-44E0-90CE-452598719A18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{253A4B03-5BC2-44E0-90CE-452598719A18}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

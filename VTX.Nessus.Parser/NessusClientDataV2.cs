@@ -19,14 +19,9 @@ namespace VTX.Nessus
         //+++++++ Constants
 
         //+++++++ Fields
-        private bool _initialized;
         private bool _cache;
-        private long _fileSize;
-        private int _hostCount;
         private FileUtilities fileUtility;
         private ConcurrentDictionary<string, NessusXML> _hostDictionary;
-        private string _filePath;
-        private string _reportname;
 
         //+++++++ Constructors
         public NessusClientDataV2()
@@ -36,7 +31,7 @@ namespace VTX.Nessus
 
         public NessusClientDataV2(string filePath)
         {
-            _filePath = filePath;
+            FilePath = filePath;
 
             Initialize();
 
@@ -55,44 +50,44 @@ namespace VTX.Nessus
         {
             fileUtility = new FileUtilities();
             // Verify File exists and is a Nessus File 
-            if (File.Exists(_filePath) == false) { throw new FileNotFoundException("File Not Found", _filePath); }
-            _fileSize = fileUtility.GetFileLength(_filePath);
-            if (_fileSize > int.MaxValue) { throw new ArgumentOutOfRangeException("File size exceeds maximum file size"); }
-            if (fileUtility.FindStringFirstLocation("<NessusClientData_v2>", _filePath) == 0) { ThrowBadNessusFile("Not a valid Nessus_V2 file"); }
+            if (File.Exists(FilePath) == false) { throw new FileNotFoundException("File Not Found", FilePath); }
+            FileSize = fileUtility.GetFileLength(FilePath);
+            if (FileSize > int.MaxValue) { throw new ArgumentOutOfRangeException("File size exceeds maximum file size"); }
+            if (fileUtility.FindStringFirstLocation("<NessusClientData_v2>", FilePath) == 0) { ThrowBadNessusFile("Not a valid Nessus_V2 file"); }
 
             // Find Locations of Key nodes within File
-            int reportnamelocation = fileUtility.FindStringFirstLocation("<Report ", _filePath);
+            int reportnamelocation = fileUtility.FindStringFirstLocation("<Report ", FilePath);
             if (reportnamelocation == 0) { ThrowBadNessusFile("No Scan Results Found"); }
 
-            List<int> hostListLocations = fileUtility.FindStringLocations("<ReportHost ", _filePath);
+            List<int> hostListLocations = fileUtility.FindStringLocations("<ReportHost ", FilePath);
             
-            _hostCount = hostListLocations.Count();
-            string reportNameNode = fileUtility.GetFileString(_filePath, reportnamelocation, reportnamelocation + 264);
-            _reportname = reportNameNode.Substring(reportNameNode.IndexOf("name=\"") + 6, reportNameNode.IndexOf("\" ") - reportNameNode.IndexOf("name=\"") - 6);
+            HostCount = hostListLocations.Count();
+            string reportNameNode = fileUtility.GetFileString(FilePath, reportnamelocation, reportnamelocation + 264);
+            ReportName = reportNameNode.Substring(reportNameNode.IndexOf("name=\"") + 6, reportNameNode.IndexOf("\" ") - reportNameNode.IndexOf("name=\"") - 6);
 
             //Setup Concurrent Dictionary
 //            int numProcs = Environment.ProcessorCount;
 //            int concurrencyLevel = numProcs * 2;
             _hostDictionary = new ConcurrentDictionary<string, NessusXML>();
 
-            for (int i = 0; i < _hostCount; i++)
+            for (int i = 0; i < HostCount; i++)
                 {
                 int reportHostStartLocation = hostListLocations[i];
                 int reportHostEndLocation = hostListLocations[i] + 1;
-                if (i == _hostCount - 1)
+                if (i == HostCount - 1)
                 {
-                    reportHostEndLocation = fileUtility.FindStringNextLocation("</Report>", _filePath, reportHostStartLocation);
+                    reportHostEndLocation = fileUtility.FindStringNextLocation("</Report>", FilePath, reportHostStartLocation);
                 }
                 else { reportHostEndLocation = hostListLocations[i + 1]; }
 
 
-                string reportHostNode = fileUtility.GetFileString(_filePath, reportHostStartLocation, reportHostStartLocation + 264);
+                string reportHostNode = fileUtility.GetFileString(FilePath, reportHostStartLocation, reportHostStartLocation + 264);
 
 
                 NessusXML reportHost = new NessusXML();
                 string reportHostName = reportHostNode.Substring(reportHostNode.IndexOf("name=\"") + 6, reportHostNode.IndexOf("\">") - reportHostNode.IndexOf("name=\"") - 6);
                 reportHost.Name = reportHostName;
-                reportHost.FilePath = _filePath;
+                reportHost.FilePath = FilePath;
                 reportHost.FileStartLocation = reportHostStartLocation;
                 reportHost.FileEndLocation = reportHostEndLocation;
                 if (!( _hostDictionary.TryAdd(reportHost.Name, reportHost)))
@@ -102,28 +97,23 @@ namespace VTX.Nessus
                     {
                         j++;
                         reportHost.Name = String.Format("{0}({1})", reportHost.Name, j);
-                        if (j > _hostCount) { ThrowBadNessusFile(String.Format("Unable to process ReportHost entry {0}", reportHostName)); }
+                        if (j > HostCount) { ThrowBadNessusFile(String.Format("Unable to process ReportHost entry {0}", reportHostName)); }
                     } while (!(_hostDictionary.TryAdd(reportHost.Name, reportHost)));
 
                 }
 
             }
 
-            _initialized = true;
+            Initialized = true;
         }
 
 
         private void ThrowBadNessusFile(string message)
         {
-            throw new FormatException(String.Format("There was an error parsing {0}: {1}", _filePath, message));
+            throw new FormatException(String.Format("There was an error parsing {0}: {1}", FilePath, message));
         }
         
         //+++++++ Properties
-
-        public bool Initialized
-        {
-            get { return _initialized; }
-        }
 
         public bool Cache
         {
@@ -149,20 +139,16 @@ namespace VTX.Nessus
             }
         }
 
-        public string FilePath
-        {
-            get { return _filePath; }
-            set
-            {
+        public string FilePath { get; private set; }
 
-            }
-        }
+        public string ReportName { get; private set; }
 
-        public string ReportName
-        {
-            get { return _reportname; }
-            set { }
-        }
+        public long FileSize { get; private set; }
+
+        public bool Initialized { get; private set; }
+
+        public int HostCount { get; private set; }
+
         public System.Collections.Generic.ICollection<VTX.Nessus.NessusXML> ReportHosts
         {
             get { return _hostDictionary.Values; }
