@@ -6,5 +6,9 @@ namespace VTX.Nessus.Parsers
 {
     public class SQLCE
     {
+        public void New()
+        {
+
+        }
     }
 }
