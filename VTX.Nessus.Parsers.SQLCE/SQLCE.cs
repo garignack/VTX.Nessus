@@ -6,7 +6,17 @@ namespace VTX.Nessus.Parsers
 {
     public class SQLCE
     {
-        public void New()
+        public void New(string ConnectString)
+        {
+
+        }
+
+        public void Clear(string ConnectString)
+        {
+
+        }
+
+        public void Parse(string FilePath, string ConnectString)
         {
 
         }
