@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4C0153A3-AF9A-49F5-AD6F-2BF2E335D3C8}</ProjectGuid>
+    <ProjectGuid>{253A4B03-5BC2-44E0-90CE-452598719A18}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VTX.Nessus</RootNamespace>
-    <AssemblyName>VTX.Nessus</AssemblyName>
+    <RootNamespace>VTX.Nessus.Parsers</RootNamespace>
+    <AssemblyName>VTX.Nessus.Parsers</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -33,16 +33,22 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\Microsoft SQL Server Compact Edition\v4.0\Private\System.Data.SqlServerCe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IParser.cs" />
-    <Compile Include="ParserFactory.cs" />
-    <Compile Include="NessusXML.cs" />
-    <Compile Include="NessusClientDataV2.cs" />
-    <Compile Include="Utilities.cs" />
+    <Compile Include="SQLCE.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VTX.Nessus.Parser\VTX.Nessus.csproj">
+      <Project>{4c0153a3-af9a-49f5-ad6f-2bf2e335d3c8}</Project>
+      <Name>VTX.Nessus</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "file:///C:/Program Files (x86)/IBM/AppScanSource/walalib/log4j.dtd" >
+<log4j:configuration debug="false" threshold="debug" xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<appender class="org.apache.log4j.FileAppender" name="fileAppender">
+		<param name="File" value="Z:/Documents/Visual Studio 2013/Projects/VTX.Nessus/VTX.Nessus.Parser/VTX.Nessus_frameworksCLIDotNet_wafl.log"/>
+		<param name="Append" value="true"/>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="&lt;-Start-&gt;%d{ISO8601}&lt;-Sep-&gt;%p&lt;-Sep-&gt;%c&lt;-Sep-&gt;%l&lt;-Sep-&gt;%m&lt;-Sep-&gt;%n"/>
+		</layout>
+	</appender>
+	<root>
+		<priority value="debug"/>
+		<appender-ref ref="fileAppender"/>
+	</root>
+</log4j:configuration>

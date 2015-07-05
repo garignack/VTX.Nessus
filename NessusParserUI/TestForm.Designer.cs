@@ -30,12 +30,12 @@
         {
             this.components = new System.ComponentModel.Container();
             this.FilePathTextBox = new System.Windows.Forms.TextBox();
+            this.testFormBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.BrowseForFileButton = new System.Windows.Forms.Button();
             this.VTXTestButton = new System.Windows.Forms.Button();
             this.LinqTestButton = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.testFormBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.testFormBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -47,6 +47,10 @@
             this.FilePathTextBox.Size = new System.Drawing.Size(234, 20);
             this.FilePathTextBox.TabIndex = 0;
             this.FilePathTextBox.TabStop = false;
+            // 
+            // testFormBindingSource
+            // 
+            this.testFormBindingSource.DataSource = typeof(NessusParserUI.TestForm);
             // 
             // BrowseForFileButton
             // 
@@ -76,6 +80,7 @@
             this.LinqTestButton.TabIndex = 3;
             this.LinqTestButton.Text = "XMLReader";
             this.LinqTestButton.UseVisualStyleBackColor = true;
+            this.LinqTestButton.Click += new System.EventHandler(this.LinqTestButton_Click);
             // 
             // button1
             // 
@@ -96,10 +101,6 @@
             this.label1.Size = new System.Drawing.Size(35, 13);
             this.label1.TabIndex = 5;
             this.label1.Text = "label1";
-            // 
-            // testFormBindingSource
-            // 
-            this.testFormBindingSource.DataSource = typeof(NessusParserUI.TestForm);
             // 
             // TestForm
             // 

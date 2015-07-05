@@ -136,7 +136,7 @@ namespace VTX.Utilities
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        public static int FindBytePatternFirstLocation(byte[] pattern, string filePath, int bufferSize = 65536)
+        public int FindBytePatternFirstLocation(byte[] pattern, string filePath, int bufferSize = 65536)
         {
             return FindBytePatternNextLocation(pattern, filePath, 0, bufferSize);
         }
@@ -202,7 +202,7 @@ namespace VTX.Utilities
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        public static byte[] GetFileBytes(string filePath, int StartLocation, int EndLocation)
+        public byte[] GetFileBytes(string filePath, int StartLocation, int EndLocation)
         {
             // Gets the bytes of a file between the StartLocation to EndLocation
             byte[] buffer;
@@ -218,6 +218,25 @@ namespace VTX.Utilities
                 r.Read(buffer, 0, length);
             }
             return buffer;
+
+        }
+
+        public string GetFileString(string filePath, int StartLocation, int EndLocation)
+        {
+            // Gets the bytes of a file between the StartLocation to EndLocation
+            byte[] buffer;
+            using (FileStream r = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+                int maxSize = (int)r.Length;
+                if (EndLocation == -1 || EndLocation > maxSize) { EndLocation = maxSize; }
+                if (StartLocation < 0) { StartLocation = 0; }
+
+                int length = EndLocation - StartLocation;
+                buffer = new byte[length];
+                r.Seek(StartLocation, SeekOrigin.Begin);
+                r.Read(buffer, 0, length);
+            }
+            return new string(GetEncoding(filePath).GetChars(buffer));
 
         }
 
@@ -245,18 +264,10 @@ namespace VTX.Utilities
             return Encoding.Default;
         }
 
-        private static byte[] GetBytes(string str)
-        {
-            byte[] bytes = new byte[str.Length * sizeof(char)];
-            System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
-            return bytes;
-        }
-
-        private static string GetString(byte[] bytes)
-        {
-            char[] chars = new char[bytes.Length / sizeof(char)];
-            System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
-            return new string(chars);
+        public long GetFileLength(string filePath) {
+            System.IO.FileInfo fileInfo = new System.IO.FileInfo(filePath);
+            long length = fileInfo.Length;
+            return length;
         }
 
     }
